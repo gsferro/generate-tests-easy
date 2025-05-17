@@ -1,6 +1,13 @@
-# Generate Tests Easy
+<p align="center">
+    <img src="logo.png" alt="FilterEasy">
+    <p align="center">
+        <a href="https://packagist.org/packages/gsferro/generate-tests-easy"><img alt="Latest Version" src="https://img.shields.io/packagist/v/gsferro/generate-tests-easy"></a>
+        <a href="https://packagist.org/packages/gsferro/generate-tests-easy"><img alt="Total Downloads" src="https://img.shields.io/packagist/dt/gsferro/generate-tests-easy"></a>
+        <a href="https://packagist.org/packages/gsferro/generate-tests-easy"><img alt="License" src="https://img.shields.io/packagist/l/gsferro/generate-tests-easy"></a>
+    </p>
+</p>
 
-![Logo](logo.png)
+------
 
 A Laravel package for automatically generating comprehensive Pest tests for your application based on code analysis.
 
