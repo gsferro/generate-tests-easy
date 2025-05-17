@@ -134,7 +134,7 @@ class GenerateFilamentTestsCommand extends BaseGenerateTestsCommand
         // If the resource name doesn't include the namespace, assume it's in App\Filament\Resources
         if (!Str::contains($resourceName, '\\')) {
             $resourceName = "App\\Filament\\Resources\\{$resourceName}";
-            
+
             // Add "Resource" suffix if not present
             if (!Str::endsWith($resourceName, 'Resource')) {
                 $resourceName .= 'Resource';

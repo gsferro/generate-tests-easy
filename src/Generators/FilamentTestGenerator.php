@@ -61,6 +61,9 @@ class FilamentTestGenerator
 
         // Write the test file
         File::put($testFilePath, $content);
+
+        // Output the created test file name
+        echo "Test file created: " . $testFilePath . PHP_EOL;
     }
 
     /**
@@ -108,6 +111,9 @@ class FilamentTestGenerator
 
         // Write the test file
         File::put($testFilePath, $content);
+
+        // Output the created test file name
+        echo "Test file created: " . $testFilePath . PHP_EOL;
     }
 
     /**
@@ -151,6 +157,8 @@ class FilamentTestGenerator
         $resourceNamespace = $resource['namespace'];
         $modelClass = basename(str_replace('\\', '/', $resource['model']));
         $modelNamespace = dirname(str_replace('\\', '/', $resource['model']));
+        // Convert forward slashes back to backslashes for PHP namespace
+        $modelNamespace = str_replace('/', '\\', $modelNamespace);
         $routePrefix = 'admin'; // Default route prefix, can be customized
         $resourceSlug = Str::kebab(Str::beforeLast($resourceClass, 'Resource'));
 
@@ -196,8 +204,12 @@ class FilamentTestGenerator
         $resourceNamespace = $resource['namespace'];
         $pageClass = basename(str_replace('\\', '/', $page['class']));
         $pageNamespace = dirname(str_replace('\\', '/', $page['class']));
+        // Convert forward slashes back to backslashes for PHP namespace
+        $pageNamespace = str_replace('/', '\\', $pageNamespace);
         $modelClass = basename(str_replace('\\', '/', $resource['model']));
         $modelNamespace = dirname(str_replace('\\', '/', $resource['model']));
+        // Convert forward slashes back to backslashes for PHP namespace
+        $modelNamespace = str_replace('/', '\\', $modelNamespace);
         $routePrefix = 'admin'; // Default route prefix, can be customized
         $resourceSlug = Str::kebab(Str::beforeLast($resourceClass, 'Resource'));
 

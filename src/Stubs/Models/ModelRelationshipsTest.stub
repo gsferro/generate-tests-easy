@@ -5,12 +5,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
+
+uses(TestCase::class, RefreshDatabase::class);
 
 beforeEach(function() 
 {
     // Create a model instance for testing
     $this->model = new {{ modelClass }}();
-    
+
     // If factory exists, create a model instance with factory
     {{ factorySetup }}
 });
@@ -27,26 +31,26 @@ test('Relationships return the correct instance types', function()
 {
     // This test will be skipped if no relationships are found
     $hasRelationships = false;
-    
+
     $reflection = new ReflectionClass({{ modelClass }}::class);
     $methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
-    
+
     foreach ($methods as $method) {
         if ($method->class !== {{ modelClass }}::class) {
             continue;
         }
-        
+
         $methodName = $method->getName();
-        
+
         // Skip non-relationship methods
         if (in_array($methodName, ['__construct', 'boot', 'booted'])) {
             continue;
         }
-        
+
         try {
             // Check if method returns a relation
             $relation = $this->model->$methodName();
-            
+
             if (
                 $relation instanceof BelongsTo || 
                 $relation instanceof HasMany || 
@@ -54,7 +58,7 @@ test('Relationships return the correct instance types', function()
                 $relation instanceof BelongsToMany
             ) {
                 $hasRelationships = true;
-                
+
                 // Test the relationship type
                 match (true) {
                     $relation instanceof BelongsTo => expect($relation)->toBeInstanceOf(BelongsTo::class),
@@ -69,7 +73,7 @@ test('Relationships return the correct instance types', function()
             continue;
         }
     }
-    
+
     if (!$hasRelationships) {
         $this->markTestSkipped('No relationships found in {{ modelClass }} model');
     }

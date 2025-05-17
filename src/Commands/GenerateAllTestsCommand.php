@@ -71,23 +71,23 @@ class GenerateAllTestsCommand extends BaseGenerateTestsCommand
 
         foreach ($modelFiles as $modelFile) {
             $modelName = pathinfo($modelFile, PATHINFO_FILENAME);
-            
+
             if ($this->option('verbose')) {
                 $this->info("Generating tests for model: {$modelName}");
             }
 
             // Get the model analyzer
             $analyzer = app('generate-tests-easy.analyzer.model');
-            
+
             // Analyze the model
             $analysis = $analyzer->analyze("App\\Models\\{$modelName}");
-            
+
             // Get the model test generator
             $generator = app('generate-tests-easy.generator.model');
-            
+
             // Generate tests
             $generator->generate($analysis, $this->getTestPath(), $this->option('force'));
-            
+
             $bar->advance();
         }
 
@@ -111,24 +111,24 @@ class GenerateAllTestsCommand extends BaseGenerateTestsCommand
 
         foreach ($controllerFiles as $controllerFile) {
             $controllerName = pathinfo($controllerFile, PATHINFO_FILENAME);
-            
+
             if ($this->option('verbose')) {
                 $this->info("Generating tests for controller: {$controllerName}");
             }
 
             // Get the controller analyzer
             $analyzer = app('generate-tests-easy.analyzer.controller');
-            
+
             // Analyze the controller
             $analysis = $analyzer->analyze("App\\Http\\Controllers\\{$controllerName}");
-            
+
             // Get the appropriate generator based on whether it's an API controller
             $generatorName = $analysis['isApi'] ? 'api' : 'controller';
             $generator = app("generate-tests-easy.generator.{$generatorName}");
-            
+
             // Generate tests
             $generator->generate($analysis, $this->getTestPath(), $this->option('force'));
-            
+
             $bar->advance();
         }
 
@@ -148,13 +148,13 @@ class GenerateAllTestsCommand extends BaseGenerateTestsCommand
 
         // Get the database analyzer
         $analyzer = app('generate-tests-easy.analyzer.database');
-        
+
         // Analyze the database
         $analysis = $analyzer->analyze();
-        
+
         // Get the model test generator
         $generator = app('generate-tests-easy.generator.model');
-        
+
         // Generate tests for each table
         $bar = $this->output->createProgressBar(count($analysis['tables']));
         $bar->start();
@@ -163,10 +163,10 @@ class GenerateAllTestsCommand extends BaseGenerateTestsCommand
             if ($this->option('verbose')) {
                 $this->info("Generating tests for table: {$table['name']}");
             }
-            
+
             // Generate tests
             $generator->generateFromTable($table, $this->getTestPath(), $this->option('force'));
-            
+
             $bar->advance();
         }
 
@@ -186,13 +186,13 @@ class GenerateAllTestsCommand extends BaseGenerateTestsCommand
 
         // Get the Livewire analyzer
         $analyzer = app('generate-tests-easy.analyzer.livewire');
-        
+
         // Analyze Livewire components
         $analysis = $analyzer->analyze();
-        
+
         // Get the Livewire test generator
         $generator = app('generate-tests-easy.generator.livewire');
-        
+
         // Generate tests for each component
         $bar = $this->output->createProgressBar(count($analysis['components']));
         $bar->start();
@@ -201,10 +201,10 @@ class GenerateAllTestsCommand extends BaseGenerateTestsCommand
             if ($this->option('verbose')) {
                 $this->info("Generating tests for Livewire component: {$component['name']}");
             }
-            
+
             // Generate tests
             $generator->generate($component, $this->getTestPath(), $this->option('force'));
-            
+
             $bar->advance();
         }
 
@@ -224,13 +224,13 @@ class GenerateAllTestsCommand extends BaseGenerateTestsCommand
 
         // Get the Filament analyzer
         $analyzer = app('generate-tests-easy.analyzer.filament');
-        
+
         // Analyze Filament resources
         $analysis = $analyzer->analyze();
-        
+
         // Get the Filament test generator
         $generator = app('generate-tests-easy.generator.filament');
-        
+
         // Generate tests for each resource
         $bar = $this->output->createProgressBar(count($analysis['resources']));
         $bar->start();
@@ -239,10 +239,10 @@ class GenerateAllTestsCommand extends BaseGenerateTestsCommand
             if ($this->option('verbose')) {
                 $this->info("Generating tests for Filament resource: {$resource['name']}");
             }
-            
+
             // Generate tests
             $generator->generate($resource, $this->getTestPath(), $this->option('force'));
-            
+
             $bar->advance();
         }
 

@@ -13,7 +13,7 @@ abstract class BaseGenerateTestsCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'generate-tests:base {--force : Force overwrite existing tests}';
+    protected $signature = 'generate-tests:base {--force : Force overwrite existing tests} {--verbose : Show detailed information during generation}';
 
     /**
      * The console command description.
@@ -68,15 +68,15 @@ abstract class BaseGenerateTestsCommand extends Command
     protected function installPest(): void
     {
         $this->info('Installing Pest...');
-        
+
         // Run Pest installer
         $this->executeCommand('php artisan pest:install');
-        
+
         // Create Pest.php if it doesn't exist
         if (!File::exists(base_path('tests/Pest.php'))) {
             $this->createPestFile();
         }
-        
+
         $this->info('Pest installed successfully.');
     }
 
@@ -88,10 +88,10 @@ abstract class BaseGenerateTestsCommand extends Command
     protected function configurePestArchPresets(): void
     {
         $this->info('Configuring Pest Arch presets...');
-        
+
         // Create or update the arch.php file
         $archFile = base_path('tests/Arch.php');
-        
+
         $content = <<<'PHP'
 <?php
 
@@ -112,9 +112,9 @@ test('laravel preset', function () {
     expect(arch()->preset()->laravel())->toBeOk();
 });
 PHP;
-        
+
         File::put($archFile, $content);
-        
+
         $this->info('Pest Arch presets configured successfully.');
     }
 
@@ -126,7 +126,7 @@ PHP;
     protected function createPestFile(): void
     {
         $pestFile = base_path('tests/Pest.php');
-        
+
         $content = <<<'PHP'
 <?php
 
@@ -175,7 +175,7 @@ function something()
     // ..
 }
 PHP;
-        
+
         File::put($pestFile, $content);
     }
 
@@ -196,24 +196,24 @@ PHP;
         if (is_resource($process)) {
             $output = stream_get_contents($pipes[1]);
             $error = stream_get_contents($pipes[2]);
-            
+
             fclose($pipes[0]);
             fclose($pipes[1]);
             fclose($pipes[2]);
-            
+
             $exitCode = proc_close($process);
-            
+
             if ($output) {
                 $this->info($output);
             }
-            
+
             if ($error) {
                 $this->error($error);
             }
-            
+
             return $exitCode;
         }
-        
+
         return 1;
     }
 
@@ -250,14 +250,14 @@ PHP;
     protected function writeFile(string $path, string $content): void
     {
         $this->createDirectory(dirname($path));
-        
+
         if (File::exists($path) && !$this->option('force')) {
             if (!$this->confirm("The file {$path} already exists. Do you want to overwrite it?")) {
                 $this->info("Skipped {$path}");
                 return;
             }
         }
-        
+
         File::put($path, $content);
         $this->info("Created {$path}");
     }
