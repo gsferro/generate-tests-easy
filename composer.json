@@ -11,18 +11,18 @@
         }
     ],
     "require": {
-        "php": "^8.0",
-        "laravel/framework": "^8.0|^9.0|^10.0",
-        "pestphp/pest": "^1.22|^2.8.1",
-        "pestphp/pest-plugin-laravel": "^1.4|^2.0",
-        "pestphp/pest-plugin-arch": "^2.0",
-        "phpunit/phpunit": "^9.5.10|^10.1",
-        "symfony/finder": "^5.0|^6.0"
+        "php": "^8.0|^8.1|^8.2|^8.3|^8.4",
+        "laravel/framework": "^8.0|^9.0|^10.0|^11.0|^12.0",
+        "pestphp/pest": "^1.22|^2.8.1|^3.0",
+        "pestphp/pest-plugin-laravel": "^1.4|^2.0|^3.2",
+        "pestphp/pest-plugin-arch": "^2.0|^v3.0",
+        "phpunit/phpunit": "^9.5.10|^10.1|^11.0|^12.0",
+        "symfony/finder": "^5.0|^6.0|^7.0"
     },
     "require-dev": {
-        "orchestra/testbench": "^6.0|^7.0|^8.0",
+        "orchestra/testbench": "^6.0|^7.0|^8.0|^9.0",
         "livewire/livewire": "^2.0|^3.0",
-        "filament/filament": "^2.0|^3.0"
+        "filament/filament": "^2.0|^3.0|^4.0"
     },
     "suggest": {
         "livewire/livewire": "Required to generate tests for Livewire components",
