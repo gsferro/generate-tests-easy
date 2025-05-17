@@ -1,11 +1,10 @@
-<p align="center">
-    <img src="logo.png" alt="FilterEasy">
-    <p align="center">
-        <a href="https://packagist.org/packages/gsferro/generate-tests-easy"><img alt="Latest Version" src="https://img.shields.io/packagist/v/gsferro/generate-tests-easy"></a>
-        <a href="https://packagist.org/packages/gsferro/generate-tests-easy"><img alt="Total Downloads" src="https://img.shields.io/packagist/dt/gsferro/generate-tests-easy"></a>
-        <a href="https://packagist.org/packages/gsferro/generate-tests-easy"><img alt="License" src="https://img.shields.io/packagist/l/gsferro/generate-tests-easy"></a>
-    </p>
-</p>
+<div align="center">
+    <img src="logo.png" alt="Generate Tests Easy Logo">
+    <br>
+    <a href="https://packagist.org/packages/gsferro/generate-tests-easy"><img alt="Latest Version" src="https://img.shields.io/packagist/v/gsferro/generate-tests-easy"></a>
+    <a href="https://packagist.org/packages/gsferro/generate-tests-easy"><img alt="Total Downloads" src="https://img.shields.io/packagist/dt/gsferro/generate-tests-easy"></a>
+    <a href="https://packagist.org/packages/gsferro/generate-tests-easy"><img alt="License" src="https://img.shields.io/packagist/l/gsferro/generate-tests-easy"></a>
+</div>
 
 ------
 
@@ -30,12 +29,14 @@ Generate Tests Easy is a powerful tool that analyzes your Laravel application's 
 ## Requirements
 
 Package | Version
---------|------------
-PHP | ^8.0|^8.1|^8.2|^8.3
-Laravel | ^8.0|^9.0|^10.0|^11.0
-Pest PHP | ^1.22|^2.8.1
-Pest Plugin Laravel | ^1.4|^2.0
-Pest Plugin Arch | ^2.0
+--------|----------
+PHP | ^8.0\|^8.1\|^8.2\|^8.3\|^8.4
+Laravel | ^8.0\|^9.0\|^10.0\|^11.0\|^12.0
+Pest PHP | ^1.22\|^2.8.1\|^3.0
+Pest Plugin Laravel | ^1.4\|^2.0\|^3.2
+Pest Plugin Arch | ^2.0\|^v3.0
+PHPUnit | ^9.5.10\|^10.1\|^11.0\|^12.0
+Symfony Finder | ^5.0\|^6.0\|^7.0
 
 ## Installation
 
