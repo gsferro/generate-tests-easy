@@ -33,6 +33,11 @@
             "Gsferro\\GenerateTestsEasy\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
@@ -40,6 +45,13 @@
         "allow-plugins": {
             "pestphp/pest-plugin": true
         }
+    },
+    "scripts": {
+        "test": "vendor/bin/pest",
+        "test:coverage": "vendor/bin/pest --coverage",
+        "test:unit": "vendor/bin/pest --group=unit",
+        "test:feature": "vendor/bin/pest --group=feature",
+        "test:arch": "vendor/bin/pest tests/Arch.php"
     },
     "extra": {
         "laravel": {
