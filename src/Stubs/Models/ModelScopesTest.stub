@@ -1,0 +1,70 @@
+<?php
+
+use {{ modelNamespace }}\{{ modelClass }};
+use Illuminate\Database\Eloquent\Builder;
+
+beforeEach(function() 
+{
+    // Create a model instance for testing
+    $this->model = new {{ modelClass }}();
+    
+    // Get all scope methods
+    $this->scopes = collect(get_class_methods($this->model))
+        ->filter(function ($method) {
+            return strpos($method, 'scope') === 0;
+        })
+        ->map(function ($method) {
+            return lcfirst(substr($method, 5));
+        })
+        ->toArray();
+    
+    if (empty($this->scopes)) {
+        $this->markTestSkipped('No scopes found in {{ modelClass }} model');
+    }
+});
+
+test('{{ modelClass }} has expected scope methods', function()
+{
+    expect($this->scopes)->not()->toBeEmpty();
+})->group('scopes');
+
+{{ individualScopeTests }}
+
+test('All scopes return a Builder instance', function() 
+{
+    foreach ($this->scopes as $scope) {
+        // Skip if the scope doesn't exist (should never happen, but just in case)
+        if (!$this->model->hasNamedScope($scope)) {
+            continue;
+        }
+        
+        // Create a new query builder
+        $query = {{ modelClass }}::query();
+        
+        // Apply the scope with empty parameters
+        $result = $query->{$scope}();
+        
+        // Check that the result is a Builder instance
+        expect($result)->toBeInstanceOf(Builder::class);
+    }
+})->group('scopes');
+
+test('Scopes can be chained', function() 
+{
+    // Skip if there's only one scope
+    if (count($this->scopes) < 2) {
+        $this->markTestSkipped('Need at least 2 scopes to test chaining');
+    }
+    
+    // Create a new query builder
+    $query = {{ modelClass }}::query();
+    
+    // Chain the first two scopes
+    $scope1 = $this->scopes[0];
+    $scope2 = $this->scopes[1];
+    
+    $result = $query->{$scope1}()->{$scope2}();
+    
+    // Check that the result is a Builder instance
+    expect($result)->toBeInstanceOf(Builder::class);
+})->group('scopes');

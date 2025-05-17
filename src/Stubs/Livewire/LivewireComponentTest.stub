@@ -1,0 +1,29 @@
+<?php
+
+use {{ componentNamespace }}\{{ componentClass }};
+use Livewire\Livewire;
+
+test('{{ componentName }} component can be rendered', function () {
+    Livewire::test({{ componentClass }}::class)
+        ->assertStatus(200);
+})->group('livewire');
+
+test('{{ componentName }} component has the correct initial state', function () {
+    Livewire::test({{ componentClass }}::class)
+        {{ initialStateAssertions }}
+})->group('livewire');
+
+{{ propertyTests }}
+
+{{ methodTests }}
+
+{{ eventTests }}
+
+{{ validationTests }}
+
+test('{{ componentName }} component renders the correct view', function () {
+    Livewire::test({{ componentClass }}::class)
+        ->assertViewIs('{{ viewName }}');
+})->group('livewire');
+
+{{ customTests }}

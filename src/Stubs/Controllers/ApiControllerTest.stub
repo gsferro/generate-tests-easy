@@ -1,0 +1,184 @@
+<?php
+
+use {{ controllerNamespace }}\{{ controllerClass }};
+use {{ modelNamespace }}\{{ modelClass }};
+use Illuminate\Testing\Fluent\AssertableJson;
+use Tests\TestCase;
+
+uses(TestCase::class);
+
+beforeEach(function()
+{
+    // Create model instance
+    $this->model = new {{ modelClass }}();
+    
+    // Get primary key and UUID column if available
+    $this->primaryKey = $this->model->getKeyName();
+    $this->uuidColumn = method_exists($this->model, 'getUuidColumnName') 
+        ? $this->model->getUuidColumnName() 
+        : null;
+    
+    // Determine which column to use for finding records
+    $this->findColumn = $this->uuidColumn ?? $this->primaryKey;
+    
+    // Create controller instance
+    $this->controller = app()->make('{{ controllerNamespace }}\{{ controllerClass }}');
+    
+    // Create a test user and authenticate
+    {{ authSetup }}
+});
+
+test('API index returns paginated results', function()
+{
+    $response = $this->getJson(route('{{ routeNamePrefix }}.index'));
+    
+    $response->assertStatus(200)
+             ->assertJsonStructure([
+                'current_page',
+                'data',
+                'first_page_url',
+                'from',
+                'last_page',
+                'last_page_url',
+                'links',
+                'next_page_url',
+                'path',
+                'per_page',
+                'prev_page_url',
+                'to',
+                'total'
+             ]);
+})->group('api');
+
+test('API show returns correct JSON structure', function()
+{
+    // Create a model instance to show
+    {{ modelFactorySetup }}
+    
+    $response = $this->getJson(route('{{ routeNamePrefix }}.show', [$model->{$this->findColumn}]));
+    
+    $response->assertStatus(200)
+             ->assertJson(function (AssertableJson $json) {
+                 $json->has('data')
+                      ->etc();
+             });
+})->group('api');
+
+test('API store creates a new record', function()
+{
+    // Create data for a new record
+    {{ modelFactoryDataSetup }}
+    
+    $response = $this->postJson(route('{{ routeNamePrefix }}.store'), $data);
+    
+    $response->assertStatus(201)
+             ->assertJson(function (AssertableJson $json) {
+                 $json->has('data')
+                      ->has('success')
+                      ->where('success', true)
+                      ->etc();
+             });
+    
+    // Verify the record was created in the database
+    $this->assertDatabaseHas($this->model->getTable(), $data);
+})->group('api');
+
+test('API store validates input data', function()
+{
+    $response = $this->postJson(route('{{ routeNamePrefix }}.store'), []);
+    
+    $response->assertStatus(422)
+             ->assertJson(function (AssertableJson $json) {
+                 $json->has('error')
+                      ->has('success')
+                      ->where('success', false)
+                      ->has('code')
+                      ->where('code', 422)
+                      ->etc();
+             });
+})->group('api');
+
+test('API update modifies an existing record', function()
+{
+    // Create a record to update
+    {{ modelFactorySetup }}
+    
+    // Create data for updating the record
+    {{ modelFactoryDataSetup }}
+    
+    $response = $this->putJson(route('{{ routeNamePrefix }}.update', [$model->{$this->findColumn}]), $data);
+    
+    $response->assertStatus(200)
+             ->assertJson(function (AssertableJson $json) {
+                 $json->has('data')
+                      ->has('success')
+                      ->where('success', true)
+                      ->etc();
+             });
+    
+    // Verify the record was updated in the database
+    $this->assertDatabaseHas($this->model->getTable(), $data);
+})->group('api');
+
+test('API update validates input data', function()
+{
+    // Create a record to update
+    {{ modelFactorySetup }}
+    
+    $response = $this->putJson(route('{{ routeNamePrefix }}.update', [$model->{$this->findColumn}]), []);
+    
+    $response->assertStatus(422)
+             ->assertJson(function (AssertableJson $json) {
+                 $json->has('error')
+                      ->has('success')
+                      ->where('success', false)
+                      ->has('code')
+                      ->where('code', 422)
+                      ->etc();
+             });
+})->group('api');
+
+test('API destroy removes a record', function()
+{
+    // Skip if destroy method is not implemented
+    if (!method_exists($this->controller, 'destroy')) {
+        $this->markTestSkipped('Destroy method not implemented in controller');
+    }
+    
+    // Create a record to delete
+    {{ modelFactorySetup }}
+    
+    $response = $this->deleteJson(route('{{ routeNamePrefix }}.destroy', [$model->{$this->findColumn}]));
+    
+    $response->assertStatus(200)
+             ->assertJson(function (AssertableJson $json) {
+                 $json->has('success')
+                      ->where('success', true)
+                      ->etc();
+             });
+    
+    // Verify the record was deleted from the database
+    $this->assertDatabaseMissing($this->model->getTable(), [
+        $this->primaryKey => $model->{$this->primaryKey}
+    ]);
+})->group('api');
+
+test('API returns 404 for non-existent record', function()
+{
+    // Try to get a non-existent record
+    $response = $this->getJson(route('{{ routeNamePrefix }}.show', ['id' => 999999]));
+    
+    $response->assertStatus(404);
+})->group('api');
+
+test('API requires authentication', function()
+{
+    // Logout the user
+    auth()->logout();
+    
+    $response = $this->getJson(route('{{ routeNamePrefix }}.index'));
+    
+    $response->assertStatus(401);
+})->group('api');
+
+{{ customEndpointTests }}

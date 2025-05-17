@@ -1,0 +1,49 @@
+<?php
+
+use {{ modelNamespace }}\{{ modelClass }};
+use Illuminate\Database\Eloquent\Model;
+
+beforeEach(function() 
+{
+    // Create a model instance for testing
+    $this->model = new {{ modelClass }}();
+    
+    // If factory exists, create a model instance with factory
+    {{ factorySetup }}
+});
+
+test('{{ modelClass }} is a valid Eloquent model', function()
+{
+    // Check that the model is an instance of Model
+    expect($this->model)
+        ->toBeObject()
+        ->toBeInstanceOf({{ modelClass }}::class)
+        ->toBeInstanceOf(Model::class);
+        
+    // Check that the table name is set correctly
+    expect($this->model->getTable())
+        ->toBe('{{ tableName }}');
+        
+    // Check that the primary key is set correctly
+    expect($this->model->getKeyName())
+        ->toBe('{{ primaryKey }}');
+        
+    {{ incrementingCheck }}
+    
+    {{ timestampsCheck }}
+});
+
+test('{{ modelClass }} has the correct fillable attributes', function()
+{
+    // Check that the fillable attributes are set correctly
+    expect($this->model->getFillable())
+        ->toBe({{ fillable }});
+});
+
+{{ relationshipTests }}
+
+{{ scopeTests }}
+
+{{ validationTests }}
+
+{{ traitTests }}

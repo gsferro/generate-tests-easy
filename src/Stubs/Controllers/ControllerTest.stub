@@ -1,0 +1,90 @@
+<?php
+
+use {{ controllerNamespace }}\{{ controllerClass }};
+use {{ modelNamespace }}\{{ modelClass }};
+use Illuminate\Support\Facades\Route;
+
+beforeEach(function()
+{
+    $routesByName = Route::getRoutes()->getRoutesByName();
+    $this->routes = [];
+    $this->routeName = '{{ routeNamePrefix }}.';
+
+    foreach ($routesByName as $name => $route) {
+        if (!str_contains($name, $this->routeName)) {
+            continue;
+        }
+        $this->routes[$name] = $route;
+    }
+
+    // Create controller instance
+    $this->controller = app()->make('{{ controllerNamespace }}\{{ controllerClass }}');
+    
+    // Create model instance if available
+    {{ modelSetup }}
+});
+
+test('{{ controllerClass }} is a valid controller', function()
+{
+    expect($this->controller)
+        ->toBeInstanceOf(\Illuminate\Routing\Controller::class);
+})->group('configured');
+
+test('The controller is configured correctly', function()
+{
+    {{ traitChecks }}
+    
+    {{ modelChecks }}
+})->group('configured');
+
+test('The routes for this controller exist', function()
+{
+    expect($this->routes)
+        ->toBeArray()
+        ->not()->toBeEmpty();
+})->group('routes');
+
+test('The routes are configured correctly', function()
+{
+    if (empty($this->routes)) {
+        $this->markTestSkipped('Routes not implemented');
+    }
+
+    $methods = [
+        'index'   => 'GET',
+        'create'  => 'GET',
+        'store'   => 'POST',
+        'show'    => 'GET',
+        'edit'    => 'GET',
+        'update'  => 'PUT',
+        'destroy' => 'DELETE',
+    ];
+
+    foreach ($this->routes as $name => $route) {
+        $method = str_replace($this->routeName, '', $name);
+        
+        // Skip if not a standard resource method
+        if (!isset($methods[$method])) {
+            continue;
+        }
+
+        // Check if the route exists
+        expect($route)->not()->toBeEmpty();
+
+        // Check if the route uses the correct HTTP method
+        expect($route->methods())->toContain($methods[$method]);
+
+        // Check if the route is connected to the correct controller method
+        expect($route->getActionName())
+            ->toBe('{{ controllerNamespace }}\{{ controllerClass }}@' . $method);
+            
+        // Check if the controller has the method
+        expect(method_exists($this->controller, $method))->toBeTrue();
+    }
+})->group('routes');
+
+{{ methodTests }}
+
+{{ middlewareTests }}
+
+{{ validationTests }}

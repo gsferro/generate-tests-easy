@@ -1,0 +1,51 @@
+{
+    "name": "gsferro/generate-tests-easy",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["Laravel", "Testing", "Pest", "Generate", "Easy", "Automated Tests"],
+    "description": "Automated test generation for Laravel applications using Pest",
+    "authors": [
+        {
+            "name": "Guilherme Ferro",
+            "email": "gsferroti@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "laravel/framework": "^8.0|^9.0|^10.0",
+        "pestphp/pest": "^1.22|^2.8.1",
+        "pestphp/pest-plugin-laravel": "^1.4|^2.0",
+        "pestphp/pest-plugin-arch": "^2.0",
+        "phpunit/phpunit": "^9.5.10|^10.1",
+        "symfony/finder": "^5.0|^6.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^6.0|^7.0|^8.0",
+        "livewire/livewire": "^2.0|^3.0",
+        "filament/filament": "^2.0|^3.0"
+    },
+    "suggest": {
+        "livewire/livewire": "Required to generate tests for Livewire components",
+        "filament/filament": "Required to generate tests for Filament resources"
+    },
+    "autoload": {
+        "psr-4": {
+            "Gsferro\\GenerateTestsEasy\\": "src/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Gsferro\\GenerateTestsEasy\\Providers\\GenerateTestsEasyServiceProvider"
+            ]
+        }
+    }
+}

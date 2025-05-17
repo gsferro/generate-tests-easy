@@ -1,0 +1,78 @@
+<?php
+
+use {{ resourceNamespace }}\{{ resourceClass }};
+use {{ modelNamespace }}\{{ modelClass }};
+use Illuminate\Support\Facades\Route;
+use Livewire\Livewire;
+
+test('{{ resourceName }} resource is registered', function () {
+    // Check that the resource class exists
+    expect(class_exists({{ resourceClass }}::class))->toBeTrue();
+    
+    // Check that the resource is associated with the correct model
+    expect({{ resourceClass }}::getModel())->toBe({{ modelClass }}::class);
+})->group('filament');
+
+test('{{ resourceName }} resource has the expected pages', function () {
+    $pages = {{ resourceClass }}::getPages();
+    
+    {{ pageAssertions }}
+})->group('filament');
+
+test('{{ resourceName }} resource has the correct form schema', function () {
+    // Skip if the resource doesn't have a form method
+    if (!method_exists({{ resourceClass }}::class, 'form')) {
+        $this->markTestSkipped('Resource does not have a form method');
+    }
+    
+    $form = {{ resourceClass }}::form(new \Filament\Forms\Form(new \Filament\Forms\ComponentContainer()));
+    
+    // Check that the form has components
+    expect($form->getComponents())->not()->toBeEmpty();
+    
+    {{ formAssertions }}
+})->group('filament');
+
+test('{{ resourceName }} resource has the correct table schema', function () {
+    // Skip if the resource doesn't have a table method
+    if (!method_exists({{ resourceClass }}::class, 'table')) {
+        $this->markTestSkipped('Resource does not have a table method');
+    }
+    
+    $table = {{ resourceClass }}::table(new \Filament\Tables\Table());
+    
+    // Check that the table has columns
+    expect($table->getColumns())->not()->toBeEmpty();
+    
+    {{ tableAssertions }}
+})->group('filament');
+
+test('{{ resourceName }} resource list page can be rendered', function () {
+    // Get the list page class
+    $pages = {{ resourceClass }}::getPages();
+    $listPageClass = $pages['index'];
+    
+    // Check that the route exists
+    $route = '{{ routePrefix }}/{{ resourceSlug }}';
+    expect(Route::has($route))->toBeTrue();
+    
+    // Render the page
+    $this->get($route)
+        ->assertSuccessful();
+})->group('filament');
+
+test('{{ resourceName }} resource create page can be rendered', function () {
+    // Get the create page class
+    $pages = {{ resourceClass }}::getPages();
+    $createPageClass = $pages['create'];
+    
+    // Check that the route exists
+    $route = '{{ routePrefix }}/{{ resourceSlug }}/create';
+    expect(Route::has($route))->toBeTrue();
+    
+    // Render the page
+    $this->get($route)
+        ->assertSuccessful();
+})->group('filament');
+
+{{ customTests }}

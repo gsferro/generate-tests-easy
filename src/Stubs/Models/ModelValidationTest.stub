@@ -1,0 +1,142 @@
+<?php
+
+use {{ modelNamespace }}\{{ modelClass }};
+use Illuminate\Support\Facades\Validator;
+
+beforeEach(function() 
+{
+    // Create a model instance for testing
+    $this->model = new {{ modelClass }}();
+    
+    // Check if model has rules
+    if (!property_exists({{ modelClass }}::class, 'rules')) {
+        $this->markTestSkipped('{{ modelClass }} model does not have validation rules defined');
+    }
+    
+    // Get the rules
+    $this->rules = {{ modelClass }}::$rules;
+    
+    // Create a factory instance if available
+    {{ factorySetup }}
+});
+
+test('{{ modelClass }} has validation rules defined', function()
+{
+    expect($this->rules)->toBeArray();
+    expect($this->rules)->not()->toBeEmpty();
+})->group('validation');
+
+test('Store validation rules are properly defined', function()
+{
+    // Skip if no store rules
+    if (!isset($this->rules['store'])) {
+        $this->markTestSkipped('No store validation rules defined');
+    }
+    
+    expect($this->rules['store'])->toBeArray();
+    expect($this->rules['store'])->not()->toBeEmpty();
+    
+    // Test each rule is properly formatted
+    foreach ($this->rules['store'] as $field => $rule) {
+        expect($field)->toBeString();
+        expect($rule)->toBeString();
+    }
+})->group('validation');
+
+test('Update validation rules are properly defined', function()
+{
+    // Skip if no update rules
+    if (!isset($this->rules['update'])) {
+        $this->markTestSkipped('No update validation rules defined');
+    }
+    
+    expect($this->rules['update'])->toBeArray();
+    expect($this->rules['update'])->not()->toBeEmpty();
+    
+    // Test each rule is properly formatted
+    foreach ($this->rules['update'] as $field => $rule) {
+        expect($field)->toBeString();
+        expect($rule)->toBeString();
+    }
+})->group('validation');
+
+test('Validation fails with empty data', function()
+{
+    // Skip if no store rules
+    if (!isset($this->rules['store'])) {
+        $this->markTestSkipped('No store validation rules defined');
+    }
+    
+    $validator = Validator::make([], $this->rules['store']);
+    
+    expect($validator->fails())->toBeTrue();
+})->group('validation');
+
+test('Validation passes with valid data', function()
+{
+    // Skip if factory doesn't exist
+    if (!method_exists($this->model, 'factory')) {
+        $this->markTestSkipped('Factory not available to generate valid data');
+    }
+    
+    // Skip if no store rules
+    if (!isset($this->rules['store'])) {
+        $this->markTestSkipped('No store validation rules defined');
+    }
+    
+    // Generate valid data using factory
+    $validData = {{ modelClass }}::factory()->make()->toArray();
+    
+    // Validate the data
+    $validator = Validator::make($validData, $this->rules['store']);
+    
+    if ($validator->fails()) {
+        // Output the errors for debugging
+        $this->fail('Validation failed with errors: ' . json_encode($validator->errors()->toArray()));
+    }
+    
+    expect($validator->fails())->toBeFalse();
+})->group('validation');
+
+test('Required fields cannot be null', function()
+{
+    // Skip if no store rules
+    if (!isset($this->rules['store'])) {
+        $this->markTestSkipped('No store validation rules defined');
+    }
+    
+    // Find required fields
+    $requiredFields = [];
+    foreach ($this->rules['store'] as $field => $rule) {
+        if (strpos($rule, 'required') !== false) {
+            $requiredFields[] = $field;
+        }
+    }
+    
+    // Skip if no required fields
+    if (empty($requiredFields)) {
+        $this->markTestSkipped('No required fields found in validation rules');
+    }
+    
+    // Test each required field
+    foreach ($requiredFields as $field) {
+        $data = [];
+        
+        // Generate valid data for other fields if factory exists
+        if (method_exists($this->model, 'factory')) {
+            $data = {{ modelClass }}::factory()->make()->toArray();
+        }
+        
+        // Set the current field to null
+        $data[$field] = null;
+        
+        // Validate
+        $validator = Validator::make($data, $this->rules['store']);
+        
+        // Should fail because a required field is null
+        expect($validator->fails())->toBeTrue();
+        expect($validator->errors()->has($field))->toBeTrue();
+    }
+})->group('validation');
+
+{{ individualValidationTests }}
