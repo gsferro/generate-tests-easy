@@ -24,8 +24,8 @@ Generate Tests Easy is a powerful tool that analyzes your Laravel application's 
 
 Package | Version
 --------|------------
-PHP | ^8.0
-Laravel | ^8.0|^9.0|^10.0
+PHP | ^8.0|^8.1|^8.2|^8.3
+Laravel | ^8.0|^9.0|^10.0|^11.0
 Pest PHP | ^1.22|^2.8.1
 Pest Plugin Laravel | ^1.4|^2.0
 Pest Plugin Arch | ^2.0
@@ -171,3 +171,26 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## License
 
 This package is open-sourced software licensed under the [MIT license](LICENSE).
+
+## Running Package Tests
+
+This package comes with its own test suite to ensure functionality works as expected. To run the tests:
+
+```bash
+# Run all tests
+composer test
+
+# Run tests with coverage report
+composer test:coverage
+
+# Run only unit tests
+composer test:unit
+
+# Run only feature tests
+composer test:feature
+
+# Run architecture tests
+composer test:arch
+```
+
+These commands are defined in the `composer.json` file and use Pest PHP for testing. The test suite includes unit tests, feature tests, and architecture tests to ensure the package works correctly.
