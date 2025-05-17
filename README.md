@@ -57,6 +57,12 @@ php artisan generate-tests:controller UserController
 
 # Generate tests for models based on database tables
 php artisan generate-tests:database
+
+# Generate tests for Filament resources
+php artisan generate-tests:filament PatientResource
+
+# Generate tests for all Filament resources
+php artisan generate-tests:filament --all
 ```
 
 ### Options
@@ -67,6 +73,30 @@ All commands support the following options:
 - `--verbose`: Show detailed information during generation
 
 ## Types of Tests Generated
+
+### Filament Resource Structure
+
+When working with Filament resources, the package recognizes the standard Filament resource structure:
+
+```
+PatientResource.php
+PatientResource/
+  ├── Pages/
+  │   ├── CreatePatient.php
+  │   ├── EditPatient.php
+  │   ├── ListPatients.php
+  │   └── ViewPatient.php
+```
+
+The package will generate appropriate tests for each component of the resource:
+- A test for the main resource class (PatientResource)
+- Tests for each page class (ListPatients, CreatePatient, EditPatient, ViewPatient)
+
+Each test is tailored to the specific functionality of the component, ensuring comprehensive test coverage. For example, ViewPatient tests will verify that:
+- The page can be rendered successfully
+- The page displays the correct record data
+- Relationships are properly displayed
+- The edit button works correctly
 
 ### Model Tests
 
@@ -89,7 +119,12 @@ All commands support the following options:
 
 ### Filament Tests (if Filament is installed)
 
-- **Resource Tests**: Tests Filament resource pages and forms
+- **Resource Tests**: Tests Filament resource configuration, model association, and navigation
+- **List Page Tests**: Tests the resource list page, table columns, search, and sorting functionality
+- **Create Page Tests**: Tests the resource create page, form fields, validation, and record creation
+- **Edit Page Tests**: Tests the resource edit page, form fields, validation, and record updates
+- **Form Tests**: Tests form components, validation rules, and data submission
+- **Table Tests**: Tests table columns, filters, actions, and bulk actions
 - **Panel Tests**: Tests Filament panel configuration and access
 
 ## Configuration
@@ -106,16 +141,16 @@ php artisan vendor:publish --tag=generate-tests-easy-config
 return [
     // Path where tests will be generated
     'test_path' => 'tests',
-    
+
     // Whether to install Pest if not already installed
     'install_pest' => true,
-    
+
     // Whether to configure Pest Arch presets
     'configure_arch_presets' => true,
-    
+
     // Test coverage target percentage
     'coverage_target' => 80,
-    
+
     // Custom stubs path (if you want to customize the test templates)
     'stubs_path' => null,
 ];

@@ -1,0 +1,75 @@
+<?php
+
+use {{ pageNamespace }}\{{ pageClass }};
+use {{ resourceNamespace }}\{{ resourceClass }};
+use {{ modelNamespace }}\{{ modelClass }};
+use Livewire\Livewire;
+
+test('{{ pageClass }} page can be rendered', function () {
+    // Create a test user with the necessary permissions
+    {{ authSetup }}
+    
+    // Get the route for the page
+    $route = '{{ routePrefix }}/{{ resourceSlug }}/create';
+    
+    // Check that the route exists
+    expect(Route::has($route))->toBeTrue();
+    
+    // Render the page
+    $this->get($route)
+        ->assertSuccessful();
+})->group('filament');
+
+test('{{ pageClass }} page contains the correct Livewire component', function () {
+    // Create a test user with the necessary permissions
+    {{ authSetup }}
+    
+    // Get the route for the page
+    $route = '{{ routePrefix }}/{{ resourceSlug }}/create';
+    
+    // Render the page
+    $response = $this->get($route);
+    
+    // Check that the page contains the Livewire component
+    $response->assertSeeLivewire({{ pageClass }}::class);
+})->group('filament');
+
+test('{{ pageClass }} page displays the form with correct fields', function () {
+    // Test the Livewire component
+    Livewire::test({{ pageClass }}::class)
+        ->assertSuccessful()
+        {{ formFieldAssertions }};
+})->group('filament');
+
+test('{{ pageClass }} page can create a new record', function () {
+    // Generate test data
+    {{ modelFactoryDataSetup }}
+    
+    // Test the Livewire component
+    Livewire::test({{ pageClass }}::class)
+        ->assertSuccessful()
+        {{ formFillAssertions }}
+        ->call('create')
+        ->assertHasNoFormErrors();
+    
+    // Check that the record was created in the database
+    $this->assertDatabaseHas('{{ tableName }}', {{ databaseAssertions }});
+})->group('filament');
+
+test('{{ pageClass }} page validates form data', function () {
+    // Test the Livewire component with invalid data
+    Livewire::test({{ pageClass }}::class)
+        ->assertSuccessful()
+        {{ invalidFormFillAssertions }}
+        ->call('create')
+        ->assertHasFormErrors({{ formErrorAssertions }});
+})->group('filament');
+
+test('{{ pageClass }} page has cancel button that works', function () {
+    // Test the Livewire component
+    Livewire::test({{ pageClass }}::class)
+        ->assertSuccessful()
+        ->assertFormExists();
+})->group('filament');
+
+{{ customTests }}

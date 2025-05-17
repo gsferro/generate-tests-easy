@@ -1,0 +1,43 @@
+<?php
+
+use {{ pageNamespace }}\{{ pageClass }};
+use {{ resourceNamespace }}\{{ resourceClass }};
+use {{ modelNamespace }}\{{ modelClass }};
+use Livewire\Livewire;
+
+test('{{ pageClass }} page can be rendered', function () {
+    // Create a test user with the necessary permissions
+    {{ authSetup }}
+    
+    // Get the route for the page
+    $route = '{{ routePrefix }}/{{ resourceSlug }}{{ pageRoute }}';
+    
+    // Check that the route exists
+    expect(Route::has($route))->toBeTrue();
+    
+    // Render the page
+    $this->get($route)
+        ->assertSuccessful();
+})->group('filament');
+
+test('{{ pageClass }} page contains the correct Livewire component', function () {
+    // Create a test user with the necessary permissions
+    {{ authSetup }}
+    
+    // Get the route for the page
+    $route = '{{ routePrefix }}/{{ resourceSlug }}{{ pageRoute }}';
+    
+    // Render the page
+    $response = $this->get($route);
+    
+    // Check that the page contains the Livewire component
+    $response->assertSeeLivewire({{ pageClass }}::class);
+})->group('filament');
+
+{{ formTests }}
+
+{{ tableTests }}
+
+{{ actionTests }}
+
+{{ customTests }}

@@ -1,0 +1,18 @@
+<?php
+
+use Illuminate\Support\Facades\Artisan;
+
+test('php preset', function () {
+    Artisan::call('about');
+    expect(arch()->preset()->php())->toBeOk();
+});
+
+test('security preset', function () {
+    Artisan::call('about');
+    expect(arch()->preset()->security())->toBeOk();
+});
+
+test('laravel preset', function () {
+    Artisan::call('about');
+    expect(arch()->preset()->laravel())->toBeOk();
+});

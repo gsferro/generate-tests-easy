@@ -5,6 +5,7 @@ namespace Gsferro\GenerateTestsEasy\Providers;
 use Gsferro\GenerateTestsEasy\Commands\GenerateAllTestsCommand;
 use Gsferro\GenerateTestsEasy\Commands\GenerateControllerTestsCommand;
 use Gsferro\GenerateTestsEasy\Commands\GenerateDatabaseTestsCommand;
+use Gsferro\GenerateTestsEasy\Commands\GenerateFilamentTestsCommand;
 use Gsferro\GenerateTestsEasy\Commands\GenerateModelTestsCommand;
 use Illuminate\Support\ServiceProvider;
 
@@ -29,6 +30,7 @@ class GenerateTestsEasyServiceProvider extends ServiceProvider
                 GenerateModelTestsCommand::class,
                 GenerateControllerTestsCommand::class,
                 GenerateDatabaseTestsCommand::class,
+                GenerateFilamentTestsCommand::class,
             ]);
         }
     }

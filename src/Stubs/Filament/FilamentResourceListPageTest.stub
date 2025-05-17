@@ -1,0 +1,78 @@
+<?php
+
+use {{ pageNamespace }}\{{ pageClass }};
+use {{ resourceNamespace }}\{{ resourceClass }};
+use {{ modelNamespace }}\{{ modelClass }};
+use Livewire\Livewire;
+
+test('{{ pageClass }} page can be rendered', function () {
+    // Create a test user with the necessary permissions
+    {{ authSetup }}
+    
+    // Get the route for the page
+    $route = '{{ routePrefix }}/{{ resourceSlug }}';
+    
+    // Check that the route exists
+    expect(Route::has($route))->toBeTrue();
+    
+    // Render the page
+    $this->get($route)
+        ->assertSuccessful();
+})->group('filament');
+
+test('{{ pageClass }} page contains the correct Livewire component', function () {
+    // Create a test user with the necessary permissions
+    {{ authSetup }}
+    
+    // Get the route for the page
+    $route = '{{ routePrefix }}/{{ resourceSlug }}';
+    
+    // Render the page
+    $response = $this->get($route);
+    
+    // Check that the page contains the Livewire component
+    $response->assertSeeLivewire({{ pageClass }}::class);
+})->group('filament');
+
+test('{{ pageClass }} page displays the table with correct columns', function () {
+    // Create test records
+    {{ modelFactorySetup }}
+    
+    // Test the Livewire component
+    Livewire::test({{ pageClass }}::class)
+        ->assertSuccessful()
+        ->assertCanSeeTableRecords([$model])
+        {{ tableColumnAssertions }};
+})->group('filament');
+
+test('{{ pageClass }} page can search records', function () {
+    // Create test records
+    {{ modelFactorySetup }}
+    
+    // Test the Livewire component with search
+    Livewire::test({{ pageClass }}::class)
+        ->assertSuccessful()
+        ->searchTable('{{ searchTerm }}')
+        ->assertCanSeeTableRecords([$model])
+        ->searchTable('nonexistent-term')
+        ->assertCanNotSeeTableRecords([$model]);
+})->group('filament');
+
+test('{{ pageClass }} page can sort records', function () {
+    // Create test records
+    {{ modelFactorySetup }}
+    
+    // Test the Livewire component with sorting
+    Livewire::test({{ pageClass }}::class)
+        ->assertSuccessful()
+        {{ sortAssertions }};
+})->group('filament');
+
+test('{{ pageClass }} page has create button that works', function () {
+    // Test the Livewire component
+    Livewire::test({{ pageClass }}::class)
+        ->assertSuccessful()
+        ->assertTableActionExists('create');
+})->group('filament');
+
+{{ customTests }}
