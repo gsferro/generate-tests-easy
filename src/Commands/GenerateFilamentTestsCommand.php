@@ -17,8 +17,7 @@ class GenerateFilamentTestsCommand extends BaseGenerateTestsCommand
     protected $signature = 'generate-tests:filament
                             {resource? : The name of the Filament resource to generate tests for}
                             {--all : Generate tests for all Filament resources}
-                            {--force : Force overwrite existing tests}
-                            {--verbose : Show detailed information during generation}';
+                            {--force : Force overwrite existing tests}';
 
     /**
      * The console command description.
@@ -54,6 +53,15 @@ class GenerateFilamentTestsCommand extends BaseGenerateTestsCommand
 
         $this->analyzer = $analyzer;
         $this->generator = $generator;
+
+        // Set the confirmation callback
+        $this->generator->setConfirmCallback(function($message, $type = 'confirm') {
+            if ($type === 'confirm') {
+                return $this->confirm($message);
+            } else if ($type === 'info') {
+                $this->info($message);
+            }
+        });
     }
 
     /**
@@ -64,7 +72,7 @@ class GenerateFilamentTestsCommand extends BaseGenerateTestsCommand
     protected function generateTests(): int
     {
         // Check if Filament is installed
-        if (!class_exists('Filament\\Filament')) {
+        if (!$this->isFilamentInstalled()) {
             $this->error('Filament is not installed.');
             return 1;
         }
@@ -161,5 +169,28 @@ class GenerateFilamentTestsCommand extends BaseGenerateTestsCommand
         $this->info("Tests for Filament resource {$resourceName} generated successfully!");
 
         return 0;
+    }
+
+    /**
+     * Check if Filament is installed.
+     *
+     * @return bool
+     */
+    protected function isFilamentInstalled(): bool
+    {
+        // Check if filament/filament is in composer.json
+        $composerJsonPath = base_path('composer.json');
+        if (!File::exists($composerJsonPath)) {
+            return false;
+        }
+
+        $composerJson = json_decode(File::get($composerJsonPath), true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return false;
+        }
+
+        // Check in both require and require-dev sections
+        return isset($composerJson['require']['filament/filament']) || 
+               isset($composerJson['require-dev']['filament/filament']);
     }
 }

@@ -18,7 +18,7 @@ class FilamentAnalyzer
     public function analyze(array $options = []): array
     {
         // Check if Filament is installed
-        if (!class_exists('Filament\\Filament')) {
+        if (!$this->isFilamentInstalled()) {
             return [
                 'installed' => false,
                 'resources' => [],
@@ -566,5 +566,28 @@ class FilamentAnalyzer
         }
 
         return [];
+    }
+
+    /**
+     * Check if Filament is installed.
+     *
+     * @return bool
+     */
+    protected function isFilamentInstalled(): bool
+    {
+        // Check if filament/filament is in composer.json
+        $composerJsonPath = base_path('composer.json');
+        if (!File::exists($composerJsonPath)) {
+            return false;
+        }
+
+        $composerJson = json_decode(File::get($composerJsonPath), true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return false;
+        }
+
+        // Check in both require and require-dev sections
+        return isset($composerJson['require']['filament/filament']) || 
+               isset($composerJson['require-dev']['filament/filament']);
     }
 }

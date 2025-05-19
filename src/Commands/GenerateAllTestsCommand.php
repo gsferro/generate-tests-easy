@@ -13,8 +13,7 @@ class GenerateAllTestsCommand extends BaseGenerateTestsCommand
      * @var string
      */
     protected $signature = 'generate-tests:all
-                            {--force : Force overwrite existing tests}
-                            {--verbose : Show detailed information during generation}';
+                            {--force : Force overwrite existing tests}';
 
     /**
      * The console command description.
@@ -84,6 +83,15 @@ class GenerateAllTestsCommand extends BaseGenerateTestsCommand
 
             // Get the model test generator
             $generator = app('generate-tests-easy.generator.model');
+
+            // Set the confirmation callback
+            $generator->setConfirmCallback(function($message, $type = 'confirm') {
+                if ($type === 'confirm') {
+                    return $this->confirm($message);
+                } else if ($type === 'info') {
+                    $this->info($message);
+                }
+            });
 
             // Generate tests
             $generator->generate($analysis, $this->getTestPath(), $this->option('force'));
@@ -268,6 +276,19 @@ class GenerateAllTestsCommand extends BaseGenerateTestsCommand
      */
     protected function isFilamentInstalled(): bool
     {
-        return class_exists('Filament\\Filament');
+        // Check if filament/filament is in composer.json
+        $composerJsonPath = base_path('composer.json');
+        if (!File::exists($composerJsonPath)) {
+            return false;
+        }
+
+        $composerJson = json_decode(File::get($composerJsonPath), true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return false;
+        }
+
+        // Check in both require and require-dev sections
+        return isset($composerJson['require']['filament/filament']) || 
+               isset($composerJson['require-dev']['filament/filament']);
     }
 }

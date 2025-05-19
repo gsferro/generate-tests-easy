@@ -16,8 +16,7 @@ class GenerateDatabaseTestsCommand extends BaseGenerateTestsCommand
                             {--connection= : The database connection to use}
                             {--tables= : Comma-separated list of tables to generate tests for}
                             {--exclude= : Comma-separated list of tables to exclude}
-                            {--force : Force overwrite existing tests}
-                            {--verbose : Show detailed information during generation}';
+                            {--force : Force overwrite existing tests}';
 
     /**
      * The console command description.
@@ -50,6 +49,15 @@ class GenerateDatabaseTestsCommand extends BaseGenerateTestsCommand
 
         // Get the model test generator
         $generator = app('generate-tests-easy.generator.model');
+
+        // Set the confirmation callback
+        $generator->setConfirmCallback(function($message, $type = 'confirm') {
+            if ($type === 'confirm') {
+                return $this->confirm($message);
+            } else if ($type === 'info') {
+                $this->info($message);
+            }
+        });
 
         // Generate tests for each table
         $bar = $this->output->createProgressBar(count($analysis['tables']));

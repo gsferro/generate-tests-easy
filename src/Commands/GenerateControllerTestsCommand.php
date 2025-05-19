@@ -55,6 +55,15 @@ class GenerateControllerTestsCommand extends BaseGenerateTestsCommand
         $generatorName = $analysis['isApi'] ? 'api' : 'controller';
         $generator = app("generate-tests-easy.generator.{$generatorName}");
 
+        // Set the confirmation callback
+        $generator->setConfirmCallback(function($message, $type = 'confirm') {
+            if ($type === 'confirm') {
+                return $this->confirm($message);
+            } else if ($type === 'info') {
+                $this->info($message);
+            }
+        });
+
         // Generate tests
         $generator->generate($analysis, $this->getTestPath(), $this->option('force'));
 

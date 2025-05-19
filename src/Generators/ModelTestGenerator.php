@@ -8,6 +8,24 @@ use Illuminate\Support\Str;
 class ModelTestGenerator
 {
     /**
+     * Callback function for confirming file overwrites.
+     *
+     * @var callable|null
+     */
+    protected $confirmCallback = null;
+
+    /**
+     * Set the callback function for confirming file overwrites.
+     *
+     * @param callable $callback
+     * @return $this
+     */
+    public function setConfirmCallback(callable $callback): self
+    {
+        $this->confirmCallback = $callback;
+        return $this;
+    }
+    /**
      * Generate tests for a model.
      *
      * @param array $analysis The analyzed model data
@@ -26,7 +44,14 @@ class ModelTestGenerator
 
         // Check if the test file already exists and we're not forcing overwrite
         if (File::exists($testFilePath) && !$force) {
-            return;
+            // If we have a confirmation callback, use it to ask for confirmation
+            if ($this->confirmCallback && !call_user_func($this->confirmCallback, "The file {$testFilePath} already exists. Do you want to overwrite it?")) {
+                // If the user doesn't want to overwrite, skip this file
+                if ($this->confirmCallback) {
+                    call_user_func($this->confirmCallback, "Skipped {$testFilePath}", 'info');
+                }
+                return;
+            }
         }
 
         // Create the test directory if it doesn't exist
@@ -45,7 +70,11 @@ class ModelTestGenerator
         File::put($testFilePath, $content);
 
         // Output the created test file name
-        echo "Test file created: " . $testFilePath . PHP_EOL;
+        if ($this->confirmCallback) {
+            call_user_func($this->confirmCallback, "Test file created: {$testFilePath}", 'info');
+        } else {
+            echo "Test file created: " . $testFilePath . PHP_EOL;
+        }
 
         // Generate relationship tests if the model has relationships
         if (!empty($analysis['relationships'])) {
@@ -182,7 +211,14 @@ class ModelTestGenerator
 
         // Check if the test file already exists and we're not forcing overwrite
         if (File::exists($testFilePath) && !$force) {
-            return;
+            // If we have a confirmation callback, use it to ask for confirmation
+            if ($this->confirmCallback && !call_user_func($this->confirmCallback, "The file {$testFilePath} already exists. Do you want to overwrite it?")) {
+                // If the user doesn't want to overwrite, skip this file
+                if ($this->confirmCallback) {
+                    call_user_func($this->confirmCallback, "Skipped {$testFilePath}", 'info');
+                }
+                return;
+            }
         }
 
         // Create the test directory if it doesn't exist
@@ -201,7 +237,11 @@ class ModelTestGenerator
         File::put($testFilePath, $content);
 
         // Output the created test file name
-        echo "Test file created: " . $testFilePath . PHP_EOL;
+        if ($this->confirmCallback) {
+            call_user_func($this->confirmCallback, "Test file created: {$testFilePath}", 'info');
+        } else {
+            echo "Test file created: " . $testFilePath . PHP_EOL;
+        }
     }
 
     /**
@@ -223,7 +263,14 @@ class ModelTestGenerator
 
         // Check if the test file already exists and we're not forcing overwrite
         if (File::exists($testFilePath) && !$force) {
-            return;
+            // If we have a confirmation callback, use it to ask for confirmation
+            if ($this->confirmCallback && !call_user_func($this->confirmCallback, "The file {$testFilePath} already exists. Do you want to overwrite it?")) {
+                // If the user doesn't want to overwrite, skip this file
+                if ($this->confirmCallback) {
+                    call_user_func($this->confirmCallback, "Skipped {$testFilePath}", 'info');
+                }
+                return;
+            }
         }
 
         // Create the test directory if it doesn't exist
@@ -242,7 +289,11 @@ class ModelTestGenerator
         File::put($testFilePath, $content);
 
         // Output the created test file name
-        echo "Test file created: " . $testFilePath . PHP_EOL;
+        if ($this->confirmCallback) {
+            call_user_func($this->confirmCallback, "Test file created: {$testFilePath}", 'info');
+        } else {
+            echo "Test file created: " . $testFilePath . PHP_EOL;
+        }
     }
 
     /**
@@ -264,7 +315,14 @@ class ModelTestGenerator
 
         // Check if the test file already exists and we're not forcing overwrite
         if (File::exists($testFilePath) && !$force) {
-            return;
+            // If we have a confirmation callback, use it to ask for confirmation
+            if ($this->confirmCallback && !call_user_func($this->confirmCallback, "The file {$testFilePath} already exists. Do you want to overwrite it?")) {
+                // If the user doesn't want to overwrite, skip this file
+                if ($this->confirmCallback) {
+                    call_user_func($this->confirmCallback, "Skipped {$testFilePath}", 'info');
+                }
+                return;
+            }
         }
 
         // Create the test directory if it doesn't exist
@@ -283,7 +341,11 @@ class ModelTestGenerator
         File::put($testFilePath, $content);
 
         // Output the created test file name
-        echo "Test file created: " . $testFilePath . PHP_EOL;
+        if ($this->confirmCallback) {
+            call_user_func($this->confirmCallback, "Test file created: {$testFilePath}", 'info');
+        } else {
+            echo "Test file created: " . $testFilePath . PHP_EOL;
+        }
     }
 
     /**
